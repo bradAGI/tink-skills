@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "suite_sha256": "ff8041acceedbcff8d895f4fd4a8c31fd43ecae84d374cff5848e2571ed9a8eb",
+  "cases": [
+    {
+      "case_id": "contextual-fit-over-popularity",
+      "origin": "author_derived",
+      "source_id": "skill-scout-author-scenario-contextual-fit-over-popularity",
+      "source_type": "author_scenario",
+      "observed_at": "2026-07-31",
+      "task_author": "Jcode with user authorization",
+      "artifact": "provenance/contextual-fit-over-popularity.json",
+      "artifact_sha256": "002987d73aaf4dbf8992f883128493b14e22bf1d92b59349b0c2b0a9c72bcac3",
+      "case_sha256": "c5659c431e4d37677795dbe358f3ccd02d560fe178ffe9cebef6672e5cda8e83"
+    },
+    {
+      "case_id": "safety-and-provenance-gate",
+      "origin": "author_derived",
+      "source_id": "skill-scout-author-scenario-safety-and-provenance-gate",
+      "source_type": "author_scenario",
+      "observed_at": "2026-07-31",
+      "task_author": "Jcode with user authorization",
+      "artifact": "provenance/safety-and-provenance-gate.json",
+      "artifact_sha256": "58d664c468dedf38a516b65b0904ce9d8facc27ae8211b57f9974885ae2cb8df",
+      "case_sha256": "38cce55ca275fb556f074b9e510d9ba741d0c5b93e291ad707437168668ff6e3"
+    },
+    {
+      "case_id": "deduplicate-and-abstain",
+      "origin": "author_derived",
+      "source_id": "skill-scout-author-scenario-deduplicate-and-abstain",
+      "source_type": "author_scenario",
+      "observed_at": "2026-07-31",
+      "task_author": "Jcode with user authorization",
+      "artifact": "provenance/deduplicate-and-abstain.json",
+      "artifact_sha256": "28579d44f406f3061c52c5800d16582f5d14d1055856e17b2fd2d0e12a79e498",
+      "case_sha256": "95c1aeff450ad8c5762764eeea939210a21aa8705d755894c76b0a060a618c8e"
+    }
+  ]
+}
