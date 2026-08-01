@@ -22,6 +22,11 @@ npx skills add jon-devlapaz/skill-scout --skill skill-scout \
 The same installer also recognizes other Agent Skills harnesses. Add targets
 such as `gemini-cli`, `github-copilot`, or `opencode` to the `--agent` list.
 
+> [!IMPORTANT]
+> Hermes's community registry currently contains an unrelated skill also named
+> `skill-scout`. Use the repository-specific command above or the manual copy
+> below; `hermes skills install skill-scout` selects that other package.
+
 ### Manual installation
 
 Clone the repository, then copy or symlink `skills/skill-scout` into the skill
