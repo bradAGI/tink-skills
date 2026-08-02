@@ -86,8 +86,9 @@ the exact model before anything runs.
 
 The first run is a single paired trial. You can watch it headlessly or through
 Herdr. The dry run is free and creates no artifacts. Before a live run, the
-skill shows the target calls, judge calls, and total paid calls, then waits for
-your approval. Model graders can add calls quickly, so this check is worth
+skill shows the target and judge harness invocations, explains that one agent
+invocation may contain multiple provider model calls, and then waits for your
+approval. Model graders can add invocations quickly, so this check is worth
 reading.
 
 ```text
