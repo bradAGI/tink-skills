@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "suite_sha256": "ff8041acceedbcff8d895f4fd4a8c31fd43ecae84d374cff5848e2571ed9a8eb",
+  "suite_sha256": "e285c449e4b542a3d7c4ed6bc29fe005186aa76adf6d319c443431ac9c1334d1",
   "cases": [
     {
       "case_id": "contextual-fit-over-popularity",
@@ -22,7 +22,7 @@
       "task_author": "Jcode with user authorization",
       "artifact": "provenance/safety-and-provenance-gate.json",
       "artifact_sha256": "58d664c468dedf38a516b65b0904ce9d8facc27ae8211b57f9974885ae2cb8df",
-      "case_sha256": "38cce55ca275fb556f074b9e510d9ba741d0c5b93e291ad707437168668ff6e3"
+      "case_sha256": "081859b675814ff0671dada64665740048bd896e1ba325a9fa35c6951e9f27d0"
     },
     {
       "case_id": "deduplicate-and-abstain",
