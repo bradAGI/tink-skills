@@ -1,4 +1,6 @@
-# Skill Scout and Skill Eval Loop
+# twotink
+
+Find, test, and improve agent skills.
 
 This repo contains two agent skills.
 
@@ -23,10 +25,10 @@ without separate permission.
 Install either skill with the [Skills CLI](https://skills.sh/):
 
 ```sh
-npx skills add jon-devlapaz/skill-scout --skill skill-scout \
+npx skills add jon-devlapaz/twotink --skill skill-scout \
   --agent codex cursor claude-code hermes-agent pi -g -y --copy
 
-npx skills add jon-devlapaz/skill-scout --skill skill-eval-loop \
+npx skills add jon-devlapaz/twotink --skill skill-eval-loop \
   --agent codex cursor claude-code hermes-agent pi -g -y --copy
 ```
 
@@ -57,7 +59,7 @@ such as `.agents/skills`, `.cursor/skills`, `.claude/skills`, or `.pi/skills`.
 Pi can also install the repository as a package:
 
 ```sh
-pi install git:github.com/jon-devlapaz/skill-scout
+pi install git:github.com/jon-devlapaz/twotink
 ```
 
 ## Use Skill Scout
