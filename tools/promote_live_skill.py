@@ -103,7 +103,18 @@ def render_plan(plan: PromotionPlan, repo_files: dict[Path, FileRecord], live_fi
     for path in plan.mode_changed:
         lines.append(f"mode changed: {path}\n")
     for path in plan.added:
-        lines.append(f"new live file: {path}\n")
+        live = live_files[path]
+        if live.textual:
+            lines.extend(
+                unified_diff(
+                    [],
+                    live.path.read_text(errors="replace").splitlines(keepends=True),
+                    fromfile="/dev/null",
+                    tofile=f"live/{path}",
+                )
+            )
+        else:
+            lines.append(f"new binary live file: {path}\n")
     for path in plan.repository_only:
         lines.append(f"repository-only file (not deleted): {path}\n")
     return "".join(lines)

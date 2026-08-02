@@ -261,6 +261,30 @@ class PromotionToolTests(unittest.TestCase):
         self.assertIn("--include-new", result.stderr)
         self.assertFalse(created)
 
+    def test_new_text_file_preview_shows_complete_diff(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repo, live = root / "repo", root / "live"
+            destination = repo / "skills" / "skill-scout"
+            destination.mkdir(parents=True)
+            destination.joinpath("SKILL.md").write_text("# Skill\n")
+            source = live / "skill-scout"
+            source.joinpath("scripts").mkdir(parents=True)
+            source.joinpath("SKILL.md").write_text("# Skill\n")
+            source.joinpath("scripts", "new.py").write_text("print('review me')\n")
+            result = self.run_tool(
+                "--skill",
+                "skill-scout",
+                "--repo-root",
+                str(repo),
+                "--live-root",
+                str(live),
+            )
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("--- /dev/null", result.stdout)
+        self.assertIn("+++ live/scripts/new.py", result.stdout)
+        self.assertIn("+print('review me')", result.stdout)
+
     def test_apply_never_deletes_repo_only_file(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
