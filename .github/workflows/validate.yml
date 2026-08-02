@@ -1,0 +1,49 @@
+name: Validate published skills
+
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Ruff
+        run: python3 -m pip install ruff
+
+      - name: Validate promotion tool
+        run: python3 -m unittest tests/test_promote_live_skill.py -v
+
+      - name: Run skill eval loop checks
+        run: bash skills/skill-eval-loop/scripts/healthcheck.sh
+
+      - name: Lint Python
+        run: ruff check tools tests skills/skill-eval-loop/scripts skills/skill-eval-loop/tests
+
+      - name: Check whitespace
+        run: git diff --check "$(git hash-object -t tree /dev/null)" HEAD
+
+      - name: List installable skills
+        run: |
+          npx --yes skills add . --list | tee /tmp/skills-list.txt
+          grep -q "skill-scout" /tmp/skills-list.txt
+          grep -q "skill-eval-loop" /tmp/skills-list.txt
+
+      - name: Check README links
+        run: npx --yes markdown-link-check README.md
+
+      - name: Check package count
+        run: test "$(find skills -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" = "2"

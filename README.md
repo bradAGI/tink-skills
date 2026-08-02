@@ -129,6 +129,40 @@ skills/skill-eval-loop/
 └── tests/
 ```
 
+## Maintaining these skills
+
+The repository is the copy you publish. Your local `.agents` copy is where you
+can try an improvement first. When it is ready to bring back, promote one skill
+at a time:
+
+1. Work in `~/.agents/skills/<skill-name>` and test the change there.
+2. Preview the differences. This does not write anything.
+
+   ```sh
+   python3 tools/promote_live_skill.py --skill skill-eval-loop
+   ```
+
+3. Read the diff and make sure it covers only the skill and changes you meant
+   to publish.
+4. Copy the reviewed changes into this repository.
+
+   ```sh
+   python3 tools/promote_live_skill.py --skill skill-eval-loop --apply
+   ```
+
+5. Run that skill's tests and package checks, then read `git diff`.
+6. Commit and push only after that review.
+7. If review changed the repository copy, reinstall it before the next live
+   experiment:
+
+   ```sh
+   npx skills add . --skill skill-eval-loop --agent codex -g -y --copy
+   ```
+
+The promotion command does not remove files that disappeared from your live
+copy. It also never stages, commits, tags, or publishes changes. Deletions and
+publication stay deliberate Git actions.
+
 ## License
 
 [MIT](LICENSE)
