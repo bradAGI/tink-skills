@@ -2,19 +2,32 @@
 
 Find, test, and improve agent skills.
 
-This repo contains two agent skills.
+twotink is a pair of agent skills.
 
-`skill-scout` helps you find a skill for a specific job, compare the candidates,
-and check whether any of them are worth installing. It cares more about fit,
-working examples, safety, and maintenance than stars. Sometimes the honest
-answer is that none of the candidates are good enough.
+`skill-scout` looks for skills that fit a specific job, compares the candidates,
+and checks whether any are worth installing. It gives more weight to fit,
+working examples, safety, and maintenance than to stars. If nothing holds up,
+it says so.
 
-`skill-eval-loop` tests one skill against a no-skill control on your own
-computer. It keeps the prompt, model, tools, and trial settings fixed, then
-changes whether the agent can load the skill. The result is a local diagnostic,
-not proof that the skill will work everywhere.
+`skill-eval-loop` checks whether a skill actually changes an agent's work. It
+runs the same task with and without the skill while keeping the prompt, model,
+tools, and trial settings fixed. The results are local evidence, not proof that
+the skill will work everywhere.
 
-Skill Scout only researches and recommends. It will not install a candidate,
+```mermaid
+flowchart LR
+    A["Your task"] --> B["Find<br/>skill-scout"]
+    B -->|candidate| C["Test<br/>skill-eval-loop"]
+    B -.->|none fit| D["Use · improve · skip"]
+    C --> D
+
+    subgraph twotink
+        B
+        C
+    end
+```
+
+`skill-scout` only researches and recommends. It will not install a candidate,
 change your configuration, publish anything, or run code from a candidate
 without separate permission.
 
@@ -62,10 +75,10 @@ Pi can also install the repository as a package:
 pi install git:github.com/jon-devlapaz/twotink
 ```
 
-## Use Skill Scout
+## Use `skill-scout`
 
-Ask your agent to use `skill-scout` for a recurring job you want help with.
-Depending on the agent, explicit invocation may look like `$skill-scout`,
+When the same kind of job keeps coming up, ask your agent to find a suitable
+skill. Depending on the agent, you might invoke it as `$skill-scout`,
 `/skill-scout`, or `/skill:skill-scout`.
 
 ```text
@@ -74,24 +87,23 @@ Compare these two supplied skills without searching for more candidates.
 Check whether this skill repository is safe and compatible with my agent.
 ```
 
-## Use Skill Eval Loop
+## Use `skill-eval-loop`
 
-Use `skill-eval-loop` when you have a skill and want to see whether it changes
-the result. If the skill has no eval suite, a fresh subagent writes one without
-sharing its hidden cases with the coordinating chat. That separation makes it
-harder to teach the agent to pass the test by accident.
+Run `skill-eval-loop` when you want to know whether a skill makes a difference.
+Most skills do not come with an eval suite. In that case, a fresh subagent
+writes one and keeps its hidden cases away from the coordinating chat. This
+reduces the chance that the main agent learns the answers while it works.
 
-The workflow asks one question at a time. First it asks which harness to use:
-Hermes, Claude Code, Codex, or Pi. It then checks the models available through
-that harness and suggests a budget, balanced, or quality option. You confirm
-the exact model before anything runs.
+The workflow asks one question at a time. You choose the harness first: Hermes,
+Claude Code, Codex, or Pi. It checks which models that harness can use, then
+suggests budget, balanced, and quality options. You confirm the exact model
+before anything runs.
 
-The first run is a single paired trial. You can watch it headlessly or through
-Herdr. The dry run is free and creates no artifacts. Before a live run, the
-skill shows the target and judge harness invocations, explains that one agent
-invocation may contain multiple provider model calls, and then waits for your
-approval. Model graders can add invocations quickly, so this check is worth
-reading.
+The first live check is one paired trial. You can watch it through Herdr or let
+it run headlessly. The dry run is free and creates no artifacts. Before it
+spends anything, the skill shows the target and judge commands and waits for
+your approval. One agent invocation can make several provider calls, especially
+when model graders are involved, so read that preview before confirming.
 
 ```text
 Use skill-eval-loop to test this skill against a no-skill control.
@@ -101,14 +113,14 @@ Test whether this skill works across the available Pi model tiers.
 
 ## What works where
 
-Each skill follows the open [Agent Skills specification](https://agentskills.io/specification):
+Both skills follow the open [Agent Skills specification](https://agentskills.io/specification):
 a `SKILL.md` file, relative references, and optional metadata.
 [Codex](https://learn.chatgpt.com/docs/build-skills),
 [Claude Code](https://code.claude.com/docs/en/skills),
 [Hermes Agent](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/guides/work-with-skills.md),
 and [Pi](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/skills.md)
-all use this package shape. [Cursor](https://www.cursor.com/changelog/2-4)
-supports Agent Skills in its editor and CLI.
+all understand this package shape. [Cursor](https://www.cursor.com/changelog/2-4)
+supports Agent Skills in its editor and CLI too.
 
 The `agents/openai.yaml` files add Codex UI metadata. Other agents can ignore
 them. Tool access still differs between agents, so compatibility means the
@@ -134,9 +146,8 @@ skills/skill-eval-loop/
 
 ## Maintaining these skills
 
-The repository is the copy you publish. Your local `.agents` copy is where you
-can try an improvement first. When it is ready to bring back, promote one skill
-at a time:
+The repository is the published copy. Your local `.agents` version is the
+working copy. When a change is ready to publish, promote one skill at a time:
 
 1. Work in `~/.agents/skills/<skill-name>` and test the change there.
 2. Preview the differences. This does not write anything.
@@ -162,9 +173,8 @@ at a time:
    npx skills add . --skill skill-eval-loop --agent codex -g -y --copy
    ```
 
-The promotion command does not remove files that disappeared from your live
-copy. It also never stages, commits, tags, or publishes changes. Deletions and
-publication stay deliberate Git actions.
+The promotion command copies additions and edits, but it does not mirror
+deletions. It also leaves staging, commits, tags, and publication to you.
 
 ## License
 
