@@ -69,6 +69,16 @@ personal skill directory:
 For a project-only install, use the matching directory inside the project,
 such as `.agents/skills`, `.cursor/skills`, `.claude/skills`, or `.pi/skills`.
 
+With [Tink](https://github.com/jon-devlapaz/tink), you can install both skills
+into a project's `.agents/skills/` in one step:
+
+```sh
+tink init --with-twotink
+# or, later:
+tink skill add jon-devlapaz/twotink --skill skill-scout
+tink skill add jon-devlapaz/twotink --skill skill-eval-loop
+```
+
 Pi can also install the repository as a package:
 
 ```sh
@@ -86,6 +96,12 @@ Use skill-scout to find a maintained skill for reviewing database migrations.
 Compare these two supplied skills without searching for more candidates.
 Check whether this skill repository is safe and compatible with my agent.
 ```
+
+In DISCOVER mode, scout checks this project's `.agents/skills/` first
+(non-redundancy), then public sources. Cross-project reuse via Tink's
+`~/.tink/skills/by-project/*/meta.json` catalog is **on request only** (when you
+ask about other projects). Scout does not install anything; when Tink is
+available it prefers proposing `tink skill add …` as the next approved gate.
 
 ## Use `skill-eval-loop`
 

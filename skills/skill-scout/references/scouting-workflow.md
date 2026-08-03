@@ -11,12 +11,48 @@ Search for capability rather than wording through at most three query families:
 2. the underlying mechanism or transformation;
 3. adjacent tools whose documented behavior could satisfy the contract.
 
-Cover these default source tiers when applicable:
+Cover these default source tiers when applicable, in order:
 
-- active local skills and experimental benches;
+### Tier A — active in this project (non-redundancy authority)
+
+Treat only skills loaded for **this** project as already installed:
+
+- Prefer `tink skill list` when `tink` is on `PATH` (lists `.agents/skills/`).
+- Otherwise read `<project>/.agents/skills/*/SKILL.md` (skip `README.md` and
+  dot-entries).
+- Also note other project skill roots the active harness uses here when present
+  (for example `.cursor/skills/`), but do not invent roots.
+
+A skill that exists only under a personal home (for example `~/.agents/skills/`)
+or another repository is **not** Tier A for this project.
+
+### Tier B — other Tink projects (optional reuse index)
+
+Do **not** search this tier by default. Open it only when the user asks about
+skills in other projects, reuse across repos, or “what have I installed with
+Tink elsewhere.”
+
+When activated and `$TINK_HOME` or `~/.tink` exists, read
+`skills/by-project/*/meta.json`. Each file is a name catalog:
+`{ "name", "root", "skills": [...] }` — not a skill-tree mirror.
+
+- Use matching **names** plus the recorded `root` as leads.
+- Open `<root>/.agents/skills/<name>/` only for shortlisted leads (read-only).
+- If the catalog or a `root` is missing/inaccessible, record the gap; do not
+  invent contents.
+- Never treat Tier B as satisfying the non-redundancy gate for the current
+  project. A fit here is a candidate to copy in via `tink skill add` after
+  approval, or evidence that a known skill already exists elsewhere.
+
+### Tier C — public and registries
+
 - official or canonical registries;
 - GitHub repository and skill search;
 - one broader marketplace, curated index, or general web pass.
+
+Optional supporting local benches (experimental skill sandboxes the user names)
+may be searched after Tier A when relevant; they are not Tier A unless they are
+this project's live skills root.
 
 Default budget:
 
@@ -103,12 +139,25 @@ credentials and with minimum necessary network access.
 
 A search is complete when:
 
-- the bounded source tiers and query families were covered or gaps recorded;
+- Tier A and Tier C (and Tier B only if the user requested cross-project reuse)
+  were covered or gaps recorded;
 - duplicates were normalized;
 - every finalist has repository-level evidence appropriate to risk;
 - qualification gates were applied before comparison;
 - the final expansion pass found no new qualified contender;
-- the winner has no unresolved critical safety or compatibility question.
+- the winner has no unresolved critical safety or compatibility question;
+- Coverage notes Tier A count, whether Tier B ran, and Tier C gaps.
 
 If those conditions cannot be met, report the gap and abstain or ask one
 high-leverage question. Do not manufacture search saturation or certainty.
+
+## Adoption next gate (Tink-aware, optional)
+
+When recommending install into the current project:
+
+1. Prefer `tink skill add <source> [--skill <name>]` when `tink` is available.
+2. If Tink is absent, say so and fall back to the harness's documented skill
+   install path — do not block discovery on Tink.
+3. Still require explicit user approval before any install, config change, or
+   candidate-code execution.
+4. After an approved install, suggest `tink skill check` when Tink is present.

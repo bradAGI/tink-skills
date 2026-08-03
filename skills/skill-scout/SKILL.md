@@ -62,8 +62,11 @@ production, external writes, financial effects, and human-impacting decisions.
 Reject a candidate before ranking when it lacks any required gate:
 
 1. **Workflow fit**: performs the intended transformation, not a keyword match.
-2. **Non-redundancy**: no active local skill already performs the intended
-   transformation; prefer an adequately supported local fit over adding one.
+2. **Non-redundancy**: no **active-in-this-project** skill already performs the
+   intended transformation; prefer an adequately supported project-local fit
+   over adding one. Skills found only in other projects or personal skill homes
+   are candidates or reuse leads — not proof the capability is already active
+   here.
 3. **Safety and provenance**: no unresolved critical behavior or ownership risk.
 4. **Compatibility**: works directly or needs only small, explicit adaptation.
 5. **Maintenance**: usable and not misleadingly stale for the task's risk.
@@ -100,6 +103,11 @@ A relative recommendation is not adoption approval. If one candidate passes
 all gates supported by the closed evidence, name it as the best-supported
 choice while keeping artifact pinning, adaptation, private access, testing, and
 execution behind their own later gates.
+
+When the next gate is installation into the current project and [Tink](https://github.com/jon-devlapaz/tink)
+is available, prefer proposing `tink skill add …` (after explicit approval).
+Scout stays read-only: it does not require Tink to discover, and it never runs
+install itself.
 
 ## Report concisely
 
