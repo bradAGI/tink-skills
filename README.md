@@ -1,8 +1,8 @@
-# twotink
+# tink-skills
 
 Find, test, and improve agent skills.
 
-twotink is a pair of agent skills.
+tink-skills is a pair of agent skills.
 
 `skill-scout` looks for skills that fit a specific job, compares the candidates,
 and checks whether any are worth installing. It gives more weight to fit,
@@ -21,7 +21,7 @@ flowchart LR
     B -.->|none fit| D["Use · improve · skip"]
     C --> D
 
-    subgraph twotink
+    subgraph tink-skills
         B
         C
     end
@@ -38,10 +38,10 @@ without separate permission.
 Install either skill with the [Skills CLI](https://skills.sh/):
 
 ```sh
-npx skills add jon-devlapaz/twotink --skill skill-scout \
+npx skills add jon-devlapaz/tink-skills --skill skill-scout \
   --agent codex cursor claude-code hermes-agent pi -g -y --copy
 
-npx skills add jon-devlapaz/twotink --skill skill-eval-loop \
+npx skills add jon-devlapaz/tink-skills --skill skill-eval-loop \
   --agent codex cursor claude-code hermes-agent pi -g -y --copy
 ```
 
@@ -73,16 +73,16 @@ With [Tink](https://github.com/jon-devlapaz/tink), you can install both skills
 into a project's `.agents/skills/` in one step:
 
 ```sh
-tink init --with-twotink
+tink init --with-tink-skills
 # or, later:
-tink skill add jon-devlapaz/twotink --skill skill-scout
-tink skill add jon-devlapaz/twotink --skill skill-eval-loop
+tink skill add jon-devlapaz/tink-skills --skill skill-scout
+tink skill add jon-devlapaz/tink-skills --skill skill-eval-loop
 ```
 
 Pi can also install the repository as a package:
 
 ```sh
-pi install git:github.com/jon-devlapaz/twotink
+pi install git:github.com/jon-devlapaz/tink-skills
 ```
 
 ## Use `skill-scout`
