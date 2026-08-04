@@ -1,197 +1,161 @@
 # tink-skills
 
-Find, test, and improve agent skills.
+Scout what fits. Measure if it moves anything.
 
-tink-skills is a pair of agent skills.
-
-`skill-scout` looks for skills that fit a specific job, compares the candidates,
-and checks whether any are worth installing. It gives more weight to fit,
-working examples, safety, and maintenance than to stars. If nothing holds up,
-it says so.
-
-`skill-eval-loop` checks whether a skill actually changes an agent's work. It
-runs the same task with and without the skill while keeping the prompt, model,
-tools, and trial settings fixed. The results are local evidence, not proof that
-the skill will work everywhere.
+Local evidence under project `.agents/skills/` — not a claim the skill wins
+everywhere. Install with [tink](https://github.com/jon-devlapaz/tink).
 
 ```mermaid
 flowchart LR
-    A["Your task"] --> B["Find<br/>skill-scout"]
-    B -->|candidate| C["Test<br/>skill-eval-loop"]
-    B -.->|none fit| D["Use · improve · skip"]
+    A["task"] --> B["skill-scout"]
+    B -->|candidate| C["skill-eval-loop"]
+    B -.->|none| D["use / rewrite / stop"]
     C --> D
-
-    subgraph tink-skills
-        B
-        C
-    end
 ```
-
-`skill-scout` only researches and recommends. It will not install a candidate,
-change your configuration, publish anything, or run code from a candidate
-without separate permission.
 
 ## Install
 
-### Skills CLI
+```console
+cargo install --git https://github.com/jon-devlapaz/tink.git --locked
 
-Install either skill with the [Skills CLI](https://skills.sh/):
-
-```sh
-npx skills add jon-devlapaz/tink-skills --skill skill-scout \
-  --agent codex cursor claude-code hermes-agent pi -g -y --copy
-
-npx skills add jon-devlapaz/tink-skills --skill skill-eval-loop \
-  --agent codex cursor claude-code hermes-agent pi -g -y --copy
+tink init --with-tink-skills
+tink skill list
+tink skill check
 ```
 
-You can add other compatible agents, including `gemini-cli`, `github-copilot`,
-and `opencode`, to the `--agent` list.
+One skill at a time:
 
-> [!IMPORTANT]
-> The Hermes community registry has a different package named `skill-scout`.
-> Use the repository command above or install this copy manually. Running
-> `hermes skills install skill-scout` installs the other package.
-
-### Manual install
-
-Clone this repository and copy or symlink the skill you want into your agent's
-personal skill directory:
-
-| Agent | Personal skill directory |
-| --- | --- |
-| Codex | `~/.agents/skills/<skill-name>` |
-| Cursor | `~/.cursor/skills/<skill-name>` |
-| Claude Code | `~/.claude/skills/<skill-name>` |
-| Hermes Agent | `~/.hermes/skills/<skill-name>` |
-| Pi | `~/.pi/agent/skills/<skill-name>` or `~/.agents/skills/<skill-name>` |
-
-For a project-only install, use the matching directory inside the project,
-such as `.agents/skills`, `.cursor/skills`, `.claude/skills`, or `.pi/skills`.
-
-With [Tink](https://github.com/jon-devlapaz/tink), you can install both skills
-into a project's `.agents/skills/` in one step:
-
-```sh
-tink init --with-tink-skills
-# or, later:
+```console
 tink skill add jon-devlapaz/tink-skills --skill skill-scout
 tink skill add jon-devlapaz/tink-skills --skill skill-eval-loop
 ```
 
-Pi can also install the repository as a package:
+Refresh clean imports: `tink skill refresh` (or name one skill). Source may be a
+local path or `--stash`. Do not hand-edit `.tink-source.json` receipts.
 
-```sh
-pi install git:github.com/jon-devlapaz/tink-skills
-```
+## First success
 
-## Use `skill-scout`
+Both skills are agent workflows. Point your coding agent at the project (with
+skills under `.agents/skills/`) and try:
 
-When the same kind of job keeps coming up, ask your agent to find a suitable
-skill. Depending on the agent, you might invoke it as `$skill-scout`,
-`/skill-scout`, or `/skill:skill-scout`.
+**Scout — find a fit (read-only until you approve install):**
 
 ```text
 Use skill-scout to find a maintained skill for reviewing database migrations.
-Compare these two supplied skills without searching for more candidates.
-Check whether this skill repository is safe and compatible with my agent.
 ```
 
-In DISCOVER mode, scout checks this project's `.agents/skills/` first
-(non-redundancy), then public sources. Cross-project reuse via Tink's
-`~/.tink/skills/by-project/*/meta.json` catalog is **on request only** (when you
-ask about other projects). Scout does not install anything; when Tink is
-available it prefers proposing `tink skill add …` as the next approved gate.
+You should get a best-supported choice or an honest abstain, with evidence and a
+named next gate. Scout does not install by itself.
 
-## Use `skill-eval-loop`
-
-Run `skill-eval-loop` when you want to know whether a skill makes a difference.
-Most skills do not come with an eval suite. In that case, a fresh subagent
-writes one and keeps its hidden cases away from the coordinating chat. This
-reduces the chance that the main agent learns the answers while it works.
-
-The workflow asks one question at a time. You choose the harness first: Hermes,
-Claude Code, Codex, or Pi. It checks which models that harness can use, then
-suggests budget, balanced, and quality options. You confirm the exact model
-before anything runs.
-
-The first live check is one paired trial. You can watch it through Herdr or let
-it run headlessly. The dry run is free and creates no artifacts. Before it
-spends anything, the skill shows the target and judge commands and waits for
-your approval. One agent invocation can make several provider calls, especially
-when model graders are involved, so read that preview before confirming.
+**Eval — local with/without skill signal:**
 
 ```text
 Use skill-eval-loop to test this skill against a no-skill control.
-Run a quick diagnostic of this skill with Codex.
-Test whether this skill works across the available Pi model tiers.
+Dry-run first, then ask me before any paid pilot.
 ```
 
-## What works where
+You should get a budget, a dry-run plan that wrote nothing, and after you approve
+a pilot, local paired results (control vs skill) with integrity/claim limits —
+not a “wins everywhere” trophy.
 
-Both skills follow the open [Agent Skills specification](https://agentskills.io/specification):
-a `SKILL.md` file, relative references, and optional metadata.
-[Codex](https://learn.chatgpt.com/docs/build-skills),
-[Claude Code](https://code.claude.com/docs/en/skills),
-[Hermes Agent](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/guides/work-with-skills.md),
-and [Pi](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/skills.md)
-all understand this package shape. [Cursor](https://www.cursor.com/changelog/2-4)
-supports Agent Skills in its editor and CLI too.
+## skill-scout
 
-The `agents/openai.yaml` files add Codex UI metadata. Other agents can ignore
-them. Tool access still differs between agents, so compatibility means the
-agent can find and read the skill. It does not mean every optional integration
-is installed.
+Research-only ranking under constraints (workflow fit, safety, demonstrated
+behavior, and related gates). Modes: COMPARE, VERIFY, DISCOVER, or ABSTAIN/BUILD.
+DISCOVER starts in `.agents/skills/`, then public search. Cross-project catalog
+only if you ask (`tink skill list --home`). Detail:
+[skills/skill-scout/SKILL.md](skills/skill-scout/SKILL.md).
 
-## Repository layout
+## skill-eval-loop
+
+Paired diagnostic under Hermes, Claude Code, Codex, or Pi: same task, skill on
+vs off. One question at a time; dry-run free; live runs wait for your invocation
+budget. Missing suites can be authored in a fresh subagent so cases stay sealed.
+Claim boundaries:
+[skills/skill-eval-loop/references/interpret-benchmark.md](skills/skill-eval-loop/references/interpret-benchmark.md).
+Full contract: [skills/skill-eval-loop/SKILL.md](skills/skill-eval-loop/SKILL.md).
+
+## Model
+
+Each package is `SKILL.md` plus relative resources
+([Agent Skills](https://agentskills.io/specification) shape). Optional
+`agents/openai.yaml` is Codex UI metadata.
+
+```mermaid
+flowchart LR
+  repo["tink-skills / skills/"]
+  tink["tink CLI"]
+  live[".agents/skills/"]
+
+  repo -->|"skill add"| tink
+  tink --> live
+```
+
+Published tree: this repo. Day-to-day live copy: `.agents/skills/<name>/`.
+
+## Advanced
+
+### Run eval scripts yourself
+
+When you are not driving the agent loop:
+
+```console
+export SKILL_EVAL_DIR="$PWD/.agents/skills/skill-eval-loop"
+
+python3 "$SKILL_EVAL_DIR/scripts/audit_suite.py" \
+  --skill-path "$PWD/.agents/skills/target-skill"
+
+python3 "$SKILL_EVAL_DIR/scripts/run_skill_eval.py" \
+  --skill-path "$PWD/.agents/skills/target-skill" \
+  --harness selected-harness \
+  --model exact-provider/model-id \
+  --trials 1 \
+  --dry-run
+```
+
+Optional flags: `--judge-model`, `--observer herdr`, `--evals-path`. Revalidate:
+`aggregate_benchmark.py --run-dir …`. Artifact default under
+`.agents/.eval-runs/` when skills live in `.agents/skills`.
+
+### Promote live edits into this repo
+
+```console
+python3 tools/promote_live_skill.py --skill skill-eval-loop \
+  --live-root .agents/skills
+python3 tools/promote_live_skill.py --skill skill-eval-loop \
+  --live-root .agents/skills --apply
+```
+
+Does not stage, commit, or delete repository-only files. Then:
+
+```console
+tink skill add . --skill skill-eval-loop
+tink skill check
+```
+
+## Layout
 
 ```text
-skills/skill-scout/
-├── SKILL.md
-├── agents/openai.yaml
-├── references/scouting-workflow.md
-└── evals/
-
-skills/skill-eval-loop/
-├── SKILL.md
-├── agents/openai.yaml
-├── references/
-├── scripts/
-└── tests/
+.
+├── skills/skill-scout/
+├── skills/skill-eval-loop/
+├── tools/
+├── tests/
+└── .github/workflows/
 ```
 
-## Maintaining these skills
+Two published skill packages (CI enforces the count).
 
-The repository is the published copy. Your local `.agents` version is the
-working copy. When a change is ready to publish, promote one skill at a time:
+## Develop
 
-1. Work in `~/.agents/skills/<skill-name>` and test the change there.
-2. Preview the differences. This does not write anything.
+```console
+python3 -m unittest tests/test_promote_live_skill.py -v
+bash skills/skill-eval-loop/scripts/healthcheck.sh
+python3 -m ruff check tools tests skills/skill-eval-loop/scripts skills/skill-eval-loop/tests
+```
 
-   ```sh
-   python3 tools/promote_live_skill.py --skill skill-eval-loop
-   ```
-
-3. Read the diff and make sure it covers only the skill and changes you meant
-   to publish.
-4. Copy the reviewed changes into this repository.
-
-   ```sh
-   python3 tools/promote_live_skill.py --skill skill-eval-loop --apply
-   ```
-
-5. Run that skill's tests and package checks, then read `git diff`.
-6. Commit and push only after that review.
-7. If review changed the repository copy, reinstall it before the next live
-   experiment:
-
-   ```sh
-   npx skills add . --skill skill-eval-loop --agent codex -g -y --copy
-   ```
-
-The promotion command copies additions and edits, but it does not mirror
-deletions. It also leaves staging, commits, tags, and publication to you.
+CI: [validate.yml](.github/workflows/validate.yml).
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE).
