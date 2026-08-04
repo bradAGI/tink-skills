@@ -497,6 +497,45 @@ class SuiteValidationTests(unittest.TestCase):
                 load_suite(skill)
 
 
+class DeclaredPolicyTests(unittest.TestCase):
+    """A declared distribution_policy is recorded and reported as unapplied.
+
+    The schema requires the field and validates its bounds, but no evaluator
+    decision uses it. Saying so in the run artifact keeps it from reading like a
+    threshold the run enforced.
+    """
+
+    def test_limits_name_the_policy_that_did_not_gate_the_result(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            _make_run(root, [(True, False), (True, False), (True, True)])
+            snapshot_path = root / "suite_snapshot.json"
+            snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+            snapshot["distribution_policy"] = {
+                "minimum_pairs": 3,
+                "minimum_effect_size": 0.1,
+                "confidence_level": 0.95,
+            }
+            _write_json(snapshot_path, snapshot)
+            manifest_path = root / "run_manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["suite_sha256"] = _sha256(snapshot_path)
+            _write_json(manifest_path, manifest)
+
+            limits = aggregate(root)["limits"]
+            policy_notes = [line for line in limits if "distribution_policy" in line]
+            self.assertEqual(len(policy_notes), 1)
+            self.assertIn("not applied", policy_notes[0])
+            self.assertIn("minimum_effect_size=0.1", policy_notes[0])
+
+    def test_a_run_without_a_declared_policy_gains_no_note(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            _make_run(root, [(True, False), (True, False), (True, True)])
+            limits = aggregate(root)["limits"]
+            self.assertFalse([line for line in limits if "distribution_policy" in line])
+
+
 class RuntimeTests(unittest.TestCase):
     def test_model_identity_rejects_suffix_collisions(self) -> None:
         self.assertTrue(
