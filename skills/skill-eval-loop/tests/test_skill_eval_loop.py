@@ -535,6 +535,72 @@ class DeclaredPolicyTests(unittest.TestCase):
             limits = aggregate(root)["limits"]
             self.assertFalse([line for line in limits if "distribution_policy" in line])
 
+    def test_run_suite_retains_declared_policy_in_the_snapshot(self) -> None:
+        """Honesty depends on run_suite writing the field, not only aggregate.
+
+        The aggregate-only fixtures above can stay green if the snapshot write is
+        dropped. A schema-3 fake run proves the production path retains the
+        declared policy and names it as unapplied in limits.
+        """
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            skill = _make_schema3_skill(root)
+            fake_pi = root / "fake-pi"
+            fake_pi.write_text(
+                """#!/usr/bin/env python3
+import json
+import sys
+
+if "--version" in sys.argv:
+    print("fake-pi 1.0")
+    raise SystemExit(0)
+
+treatment = "--skill" in sys.argv
+print(json.dumps({
+    "type": "system",
+    "subtype": "init",
+    "model": "provider/model-1",
+    "session_id": "fixture-session",
+    "skills": ["candidate-skill"] if treatment else [],
+}))
+print(json.dumps({
+    "message": {
+        "role": "assistant",
+        "model": "provider/model-1",
+        "content": [{"type": "text", "text": "done" if treatment else "FAIL"}],
+        "usage": {"input": 1, "output": 1, "totalTokens": 2},
+    }
+}))
+""",
+                encoding="utf-8",
+            )
+            fake_pi.chmod(0o755)
+            output = root / "run"
+            report = run_suite(
+                skill_path=skill,
+                output_dir=output,
+                model="provider/model-1",
+                trials=1,
+                pi_bin=str(fake_pi),
+            )
+            snapshot = json.loads(
+                (output / "suite_snapshot.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(
+                snapshot["distribution_policy"],
+                {
+                    "minimum_pairs": 3,
+                    "minimum_effect_size": 0.1,
+                    "confidence_level": 0.95,
+                },
+            )
+            policy_notes = [
+                line for line in report["limits"] if "distribution_policy" in line
+            ]
+            self.assertEqual(len(policy_notes), 1)
+            self.assertIn("not applied", policy_notes[0])
+            self.assertIn("minimum_effect_size=0.1", policy_notes[0])
+
 
 class RuntimeTests(unittest.TestCase):
     def test_model_identity_rejects_suffix_collisions(self) -> None:
