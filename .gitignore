@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.ruff_cache/
 .eval-runs/
 .hermes/
 .agents/
+.compound-engineering/
+docs/
