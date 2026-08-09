@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "suite_sha256": "a96496e849e9f8bcc8d61ce3d102540a3beb82bdc0107853fd3334016e58ac85",
+  "cases": [
+    {
+      "case_id": "separates-need-from-proposed-feature",
+      "origin": "author_derived",
+      "source_id": "triangulate-me-author-scenario-separates-need-from-proposed-feature",
+      "source_type": "author_scenario",
+      "observed_at": "2026-08-08",
+      "task_author": "Codex with user authorization",
+      "artifact": "provenance/separates-need-from-proposed-feature.json",
+      "artifact_sha256": "444669221147891a099c501a9929b7a15c5d087cd821fe8c2c574a7ffe00527f",
+      "case_sha256": "073ec383401a37ebb2f9d463716669e94562c3effd8bb27d3f00db1ded46ebaf"
+    },
+    {
+      "case_id": "abstains-pending-database-evidence",
+      "origin": "author_derived",
+      "source_id": "triangulate-me-author-scenario-abstains-pending-database-evidence",
+      "source_type": "author_scenario",
+      "observed_at": "2026-08-08",
+      "task_author": "Codex with user authorization",
+      "artifact": "provenance/abstains-pending-database-evidence.json",
+      "artifact_sha256": "d53ba205f1876388e31088ed12fd8710ce9bedde8b081847989007ea4b1172bb",
+      "case_sha256": "4caa11c16e0f42c7d87e5ccbcbeb52d0451db094dee9d0703844474e303dbba6"
+    },
+    {
+      "case_id": "preserves-privacy-abuse-value-crux",
+      "origin": "author_derived",
+      "source_id": "triangulate-me-author-scenario-preserves-privacy-abuse-value-crux",
+      "source_type": "author_scenario",
+      "observed_at": "2026-08-08",
+      "task_author": "Codex with user authorization",
+      "artifact": "provenance/preserves-privacy-abuse-value-crux.json",
+      "artifact_sha256": "65aa99387d02c29f4f2148a2e0615f743d0224274a644273035610f95cb4bf8d",
+      "case_sha256": "ec920ab3a9c4075654f1a758aea1293660452666f3a755639bca987294918d3d"
+    }
+  ]
+}

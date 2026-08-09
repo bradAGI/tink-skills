@@ -14,7 +14,7 @@ from difflib import unified_diff
 from pathlib import Path
 
 
-ALLOWED_SKILLS = frozenset({"skill-scout", "skill-eval-loop"})
+ALLOWED_SKILLS = frozenset({"skill-scout", "skill-eval-loop", "triangulate-me"})
 ALLOWED_TOP_LEVEL = frozenset({"SKILL.md", "agents", "evals", "references", "scripts", "tests"})
 EXCLUDED_NAMES = frozenset({".DS_Store", "__pycache__", ".pytest_cache", ".eval-runs", ".git"})
 EXCLUDED_SUFFIXES = (".pyc", ".pyo")

@@ -1,0 +1,69 @@
+# Interaction examples
+
+Use these examples to calibrate the shape of the response. Adapt the depth to
+the user's subject and language.
+
+## Ambiguous product claim
+
+User answer:
+
+> We should add team chat because customers keep asking for collaboration.
+
+Good triangulation:
+
+- **Faithful read:** Customers are asking for collaboration, and team chat is
+  the current proposed response.
+- **Steel read:** Repeated collaboration demand may justify an in-product
+  communication surface that keeps work and discussion together.
+- **Stress read:** "Collaboration" may describe comments, approvals, presence,
+  or sharing rather than chat; the proposed feature may be substituting a
+  familiar solution for an unverified need.
+- **Crux:** Whether customers need synchronous conversation or a different
+  coordination mechanism.
+- **Convergence:** Validate the collaboration job before committing to chat;
+  retain chat as one candidate rather than the requirement itself.
+- **Next question:** What are customers trying to accomplish when they ask for
+  collaboration?
+
+## Factual claim with missing evidence
+
+User answer:
+
+> MongoDB should replace Postgres because our writes are slow.
+
+Do not synthesize a database choice from competing rhetoric. Preserve the claim
+as a hypothesis, name the absent measurement, and ask for or perform the next
+diagnostic check. A valid convergence can be: "Treat datastore replacement as
+unproven until the write bottleneck is localized."
+
+## Value conflict
+
+User answer:
+
+> Anonymous use protects privacy, but removing it would reduce abuse.
+
+Differentiate the values and do not pretend evidence alone chooses their
+priority. A convergence may define a reversible boundary—such as anonymous
+reading with rate-limited or verified high-impact actions—only if it follows
+from the stated product context. Otherwise preserve the privacy-versus-abuse
+choice and ask which actions create unacceptable harm.
+
+## No plausible stress read
+
+User answer:
+
+> Every production migration needs a named owner, a tested rollback, and an
+> observable success condition.
+
+Do not invent a foolish objection. State that the answer is already bounded and
+testable, note any genuinely missing scope only if relevant, and move to the
+next unresolved decision.
+
+## No substantive answer
+
+User answer:
+
+> Thanks, that makes sense.
+
+Do not emit six interpretation headings. Acknowledge normally. Continue only if
+the prior inquiry still has an unresolved question.
