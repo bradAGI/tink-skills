@@ -28,6 +28,7 @@ One skill at a time:
 ```console
 tink skill add jon-devlapaz/tink-skills --skill skill-scout
 tink skill add jon-devlapaz/tink-skills --skill skill-eval-loop
+tink skill add jon-devlapaz/tink-skills --skill triangulate-me
 ```
 
 Refresh clean imports: `tink skill refresh` (or name one skill). Source may be a
@@ -74,6 +75,14 @@ budget. Missing suites can be authored in a fresh subagent so cases stay sealed.
 Claim boundaries:
 [skills/skill-eval-loop/references/interpret-benchmark.md](skills/skill-eval-loop/references/interpret-benchmark.md).
 Full contract: [skills/skill-eval-loop/SKILL.md](skills/skill-eval-loop/SKILL.md).
+
+## triangulate-me
+
+Iterative interpretation under pressure: restate the user's actual commitment,
+construct its strongest and weakest still-plausible readings, identify the
+crux, and recommend a convergence without manufacturing a straw man or false
+compromise. Full contract:
+[skills/triangulate-me/SKILL.md](skills/triangulate-me/SKILL.md).
 
 ## Model
 
@@ -139,12 +148,13 @@ tink skill check
 .
 ├── skills/skill-scout/
 ├── skills/skill-eval-loop/
+├── skills/triangulate-me/
 ├── tools/
 ├── tests/
 └── .github/workflows/
 ```
 
-Two published skill packages (CI enforces the count).
+Three published skill packages (CI enforces the count).
 
 ## Develop
 

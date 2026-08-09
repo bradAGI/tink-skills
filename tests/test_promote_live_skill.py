@@ -45,6 +45,27 @@ class PromotionToolTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn("No drift", result.stdout)
 
+    def test_triangulate_me_is_allowed(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repo, live = root / "repo", root / "live"
+            for skill_root in (
+                repo / "skills" / "triangulate-me",
+                live / "triangulate-me",
+            ):
+                skill_root.mkdir(parents=True)
+                (skill_root / "SKILL.md").write_text("# Triangulate Me\n")
+            result = self.run_tool(
+                "--skill",
+                "triangulate-me",
+                "--repo-root",
+                str(repo),
+                "--live-root",
+                str(live),
+            )
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("No drift", result.stdout)
+
     def test_changed_file_returns_one_without_writing(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

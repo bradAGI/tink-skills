@@ -1,0 +1,130 @@
+{
+  "schema_version": 3,
+  "skill_name": "triangulate-me",
+  "suite_type": "capability",
+  "dataset_origin": "author_derived",
+  "tool_profile": "no_tools",
+  "activation_mode": "forced",
+  "provenance_manifest": "provenance.json",
+  "distribution_policy": {
+    "minimum_pairs": 3,
+    "minimum_effect_size": 0.1,
+    "confidence_level": 0.95
+  },
+  "evals": [
+    {
+      "id": "separates-need-from-proposed-feature",
+      "behavior_class": "positive",
+      "routing_class": "should_trigger",
+      "prompt": "Help me sharpen this product decision through dialogue: We should add team chat because customers keep asking for collaboration. I want the strongest interpretation, the most vulnerable reasonable interpretation, and a better formulation before deciding.",
+      "expected_skill_loading": "required",
+      "graders": [
+        {
+          "name": "Uses the complete triangulation frame",
+          "type": "response_regex",
+          "pattern": "(?is)Faithful read.*Steel read.*Stress read.*Crux.*Convergence.*Next question"
+        },
+        {
+          "name": "Separates the customer need from the chat solution",
+          "type": "model_rubric",
+          "criteria": [
+            {
+              "requirement": "Distinguish the observed request for collaboration from the unverified proposed solution of team chat.",
+              "prompt_quote": "team chat because customers keep asking for collaboration"
+            },
+            {
+              "requirement": "Give a charitable interpretation and a plausible vulnerability without caricaturing the user's view.",
+              "prompt_quote": "strongest interpretation, the most vulnerable reasonable interpretation"
+            },
+            {
+              "requirement": "Recommend a formulation that keeps chat as a candidate while making the collaboration job the unresolved crux, then ask one question that resolves that crux.",
+              "prompt_quote": "a better formulation before deciding"
+            }
+          ]
+        }
+      ],
+      "reference": {
+        "response": "**Faithful read:** Customers are asking for collaboration, and team chat is the proposed response.\n\n**Steel read:** Repeated requests may indicate that customers need an in-product communication surface that keeps work and discussion together.\n\n**Stress read:** Collaboration may mean comments, approvals, presence, or sharing rather than chat, so the proposal may be substituting a familiar feature for an unverified job.\n\n**Crux:** Whether customers need synchronous conversation or another coordination mechanism.\n\n**Convergence:** Validate the collaboration job before committing to chat; retain chat as one candidate rather than defining it as the requirement. This changes the decision from which chat to build to which collaboration job is unmet.\n\n**Next question:** What are customers trying to accomplish when they ask for collaboration?"
+      },
+      "counter_reference": {
+        "response": "Team chat is clearly a good idea because collaboration products are popular. You should build Slack-style channels and ship quickly."
+      }
+    },
+    {
+      "id": "abstains-pending-database-evidence",
+      "behavior_class": "edge",
+      "routing_class": "should_trigger",
+      "prompt": "Help me pressure-test this answer: We should replace Postgres with MongoDB because writes are slow, but we have not measured where the latency comes from. Recommend where the two interpretations should converge.",
+      "expected_skill_loading": "required",
+      "graders": [
+        {
+          "name": "Uses the complete triangulation frame for an evidence gap",
+          "type": "response_regex",
+          "pattern": "(?is)Faithful read.*Steel read.*Stress read.*Crux.*Convergence.*Next question"
+        },
+        {
+          "name": "Refuses a rhetorical database compromise",
+          "type": "model_rubric",
+          "criteria": [
+            {
+              "requirement": "Treat the database replacement as a hypothesis rather than a settled diagnosis because the source of write latency is unmeasured.",
+              "prompt_quote": "we have not measured where the latency comes from"
+            },
+            {
+              "requirement": "Do not recommend MongoDB, Postgres, or a compromise architecture as the convergence without evidence about the bottleneck.",
+              "prompt_quote": "replace Postgres with MongoDB because writes are slow"
+            },
+            {
+              "requirement": "Converge on a concrete evidence gate and ask one diagnostic question or name one measurement that could resolve the crux.",
+              "prompt_quote": "Recommend where the two interpretations should converge"
+            }
+          ]
+        }
+      ],
+      "reference": {
+        "response": "**Faithful read:** Writes are slow, and replacing Postgres with MongoDB is the proposed remedy; the bottleneck has not been localized.\n\n**Steel read:** If the workload fundamentally conflicts with the current relational write path, a different datastore could remove a structural constraint.\n\n**Stress read:** The proposal attributes latency to the database product without evidence; the cause could be queries, indexes, locks, network, application behavior, or storage.\n\n**Crux:** Whether Postgres itself is the measured bottleneck.\n\n**Convergence:** Treat replacement as an unproven hypothesis and preserve Postgres until profiling identifies the limiting layer. No database choice is justified yet.\n\n**Next question:** Which measurement currently shows where write latency is spent?"
+      },
+      "counter_reference": {
+        "response": "The steelman favors MongoDB and the strawman favors Postgres, so use both databases to meet in the middle."
+      }
+    },
+    {
+      "id": "preserves-privacy-abuse-value-crux",
+      "behavior_class": "edge",
+      "routing_class": "should_trigger",
+      "prompt": "Interrogate this position without forcing a centrist answer: Anonymous use protects privacy, but removing anonymity would reduce abuse. Give both plausible readings, preserve any real value conflict, and recommend the next convergence question.",
+      "expected_skill_loading": "required",
+      "graders": [
+        {
+          "name": "Uses the complete triangulation frame for a value conflict",
+          "type": "response_regex",
+          "pattern": "(?is)Faithful read.*Steel read.*Stress read.*Crux.*Convergence.*Next question"
+        },
+        {
+          "name": "Preserves the value conflict without false compromise",
+          "type": "model_rubric",
+          "criteria": [
+            {
+              "requirement": "Represent both privacy and abuse prevention as legitimate concerns without inventing motives or treating either as automatically decisive.",
+              "prompt_quote": "Anonymous use protects privacy, but removing anonymity would reduce abuse"
+            },
+            {
+              "requirement": "Identify the product action or harm boundary as the crux instead of assuming the truth lies midway between anonymity and identity.",
+              "prompt_quote": "without forcing a centrist answer"
+            },
+            {
+              "requirement": "Either preserve the value disagreement or propose a conditional boundary clearly marked as a hypothesis, then ask one question that could settle the next decision.",
+              "prompt_quote": "preserve any real value conflict"
+            }
+          ]
+        }
+      ],
+      "reference": {
+        "response": "**Faithful read:** Anonymity supports privacy, while identity may deter or constrain abuse. The answer does not yet rank those values or define which actions are risky.\n\n**Steel read:** Anonymous participation may protect vulnerable users and lower the cost of access; accountability controls may also be necessary where actions can harm others.\n\n**Stress read:** Treating anonymity as globally good or bad hides important differences between reading, speaking, transacting, and administering.\n\n**Crux:** Which anonymous actions create unacceptable harm, and which identity requirements create unacceptable privacy loss.\n\n**Convergence:** Preserve the value conflict and decide at the action boundary rather than forcing one identity rule across the product. A tiered boundary is only a hypothesis until the harmful actions are known.\n\n**Next question:** Which anonymous user action currently creates the most serious abuse?"
+      },
+      "counter_reference": {
+        "response": "Both sides are valid, so require users to reveal half of their identity as a fair compromise."
+      }
+    }
+  ]
+}
