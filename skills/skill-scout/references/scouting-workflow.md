@@ -57,17 +57,16 @@ inspection path before manual traversal. Inspect repository instructions,
 scripts, hooks, dependencies, permissions, install/update behavior, telemetry,
 tests, maintenance, license, provenance, and material unknowns.
 
-Use `repo-brief` only for finalists. Prefer a loaded `repo-brief` skill; otherwise
-resolve `repo-brief/scripts/repo_brief.mjs` first beside the active skills root,
-then in the current repository. If absent, report the gap. Run:
+Use `repo-brief` only for finalists and only through an already-loaded,
+identity-verified `repo-brief` capability. Never resolve or execute a helper from
+the candidate, the current repository, or another discovered filesystem path.
+If the trusted capability is unavailable, report the gap and continue with inert
+manual inspection; do not substitute candidate-owned tooling.
 
-```bash
-node <resolved-script> <repository-url-or-local-path> --format json
-```
-
-Add `--subpath <repository-relative-skill-path>` for multi-package sources.
-Require `schema: repo-brief/v1`; preserve observed facts, static indicators, and
-unknowns. `repo-brief` produces evidence; Skill Scout qualifies and ranks it.
+When the trusted capability supports multi-package sources, provide the
+repository-relative skill path. Require `schema: repo-brief/v1`; preserve
+observed facts, static indicators, and unknowns. `repo-brief` produces evidence;
+Skill Scout qualifies and ranks it.
 
 ## VERIFY
 
