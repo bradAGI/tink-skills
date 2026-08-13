@@ -94,6 +94,11 @@ class PromotionToolTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2)
         self.assertIn("not allowed", result.stderr)
 
+    def test_rejects_extracted_skill_eval_loop(self) -> None:
+        result = self.run_tool("--skill", "skill-eval-loop")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("not allowed", result.stderr)
+
     def test_apply_requires_a_reviewed_snapshot(self) -> None:
         result = self.run_tool("--skill", "skill-scout", "--apply")
         self.assertEqual(result.returncode, 2)

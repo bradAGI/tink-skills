@@ -6,6 +6,7 @@ __pycache__/
 .eval-runs/
 .hermes/
 .agents/
+.ci/
 .compound-engineering/
 docs/ce-reviews/
 node_modules/

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import unittest
@@ -10,8 +11,14 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+SKILL_EVAL_LOOP_ROOT = Path(
+    os.environ.get(
+        "SKILL_EVAL_LOOP_ROOT",
+        REPO_ROOT / ".agents" / "skills" / "skill-eval-loop",
+    )
+)
 SKILL = REPO_ROOT / "skills" / "triangulate-me"
-AUDIT = REPO_ROOT / "skills" / "skill-eval-loop" / "scripts" / "audit_suite.py"
+AUDIT = SKILL_EVAL_LOOP_ROOT / "scripts" / "audit_suite.py"
 
 
 class TriangulateEvalContractTests(unittest.TestCase):
