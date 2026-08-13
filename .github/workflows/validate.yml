@@ -65,8 +65,6 @@ jobs:
     name: Verify checked-out package through Tink
     runs-on: ubuntu-22.04
     env:
-      CARGO_HOME: ${{ runner.temp }}/tink-cargo-home
-      TINK_PREFIX: ${{ runner.temp }}/tink-prefix
       TINK_REVISION: 2b082b5032b6f6cef6ea301868c499a93b86552f
       TINK_SOURCE: https://github.com/jon-devlapaz/tink.git
     steps:
@@ -85,9 +83,11 @@ jobs:
 
       - name: Install pinned Tink
         run: |
+          export CARGO_HOME="$RUNNER_TEMP/tink-cargo-home"
+          tink_prefix="$RUNNER_TEMP/tink-prefix"
           cargo install --git "$TINK_SOURCE" --rev "$TINK_REVISION" \
-            --locked --root "$TINK_PREFIX"
-          test "$("$TINK_PREFIX/bin/tink" --version)" = "tink 1.0.0"
+            --locked --root "$tink_prefix"
+          test "$("$tink_prefix/bin/tink" --version)" = "tink 1.0.0"
 
       - name: Exercise the checked-out candidate with isolated state
         shell: bash
@@ -95,7 +95,7 @@ jobs:
           set -euo pipefail
           project_root="$(mktemp -d)"
           tink_home="$(mktemp -d)"
-          tink="$TINK_PREFIX/bin/tink"
+          tink="$RUNNER_TEMP/tink-prefix/bin/tink"
           export TINK_HOME="$tink_home"
           # Route the canonical source through this checkout so pull-request
           # commits are tested without forging the source recorded by Tink.
