@@ -142,11 +142,22 @@ Optional flags: `--judge-model`, `--observer herdr`, `--evals-path`. Revalidate:
 ```console
 python3 tools/promote_live_skill.py --skill skill-eval-loop \
   --live-root .agents/skills
+# Copy the exact "Review snapshot" value from the inspected preview.
 python3 tools/promote_live_skill.py --skill skill-eval-loop \
-  --live-root .agents/skills --apply
+  --live-root .agents/skills --apply \
+  --snapshot sha256:reviewed-digest
 ```
 
-Does not stage, commit, or delete repository-only files. Then:
+The snapshot binds the repository and live file bytes and modes shown by the
+preview. Apply refuses drift, builds a complete replacement before swapping it
+in, and does not stage, commit, or delete repository-only files. To accept new
+live files, pass `--include-new` to both preview and apply. If a process is
+interrupted inside the portable two-rename swap, both preview and apply stop and
+report the retained transaction. After inspecting it, run
+`python3 tools/promote_live_skill.py --skill skill-eval-loop --recover`; this
+restores only an unambiguous missing destination, while ambiguous state remains
+untouched with its recovery path reported. It also removes a marker-only
+transaction left after an otherwise completed apply. Then:
 
 ```console
 tink skill add . --skill skill-eval-loop
