@@ -13,10 +13,16 @@ from unittest.mock import patch
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+SKILL_EVAL_LOOP_ROOT = Path(
+    os.environ.get(
+        "SKILL_EVAL_LOOP_ROOT",
+        REPO_ROOT / ".agents" / "skills" / "skill-eval-loop",
+    )
+)
 WORKFLOW = REPO_ROOT / "skills" / "skill-scout" / "references" / "scouting-workflow.md"
 INSPECTION = REPO_ROOT / "skills" / "skill-scout" / "references" / "repository-inspection.md"
 MALICIOUS_CANDIDATE = REPO_ROOT / "tests" / "fixtures" / "skill-scout-malicious-candidate"
-AUDIT = REPO_ROOT / "skills" / "skill-eval-loop" / "scripts" / "audit_suite.py"
+AUDIT = SKILL_EVAL_LOOP_ROOT / "scripts" / "audit_suite.py"
 
 
 class SkillScoutContractTests(unittest.TestCase):
