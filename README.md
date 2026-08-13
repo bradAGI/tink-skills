@@ -16,7 +16,9 @@ flowchart LR
 ## Install
 
 ```console
-cargo install --git https://github.com/jon-devlapaz/tink.git --locked
+# Tink 1.0.0 at the reviewed release-candidate commit.
+cargo install --git https://github.com/jon-devlapaz/tink.git \
+  --rev 2b082b5032b6f6cef6ea301868c499a93b86552f --locked
 
 tink init --with-tink-skills
 tink skill list
@@ -189,6 +191,12 @@ every `skills/*` package.
 This is a point-in-time proof: keep the isolated project quiescent while it
 runs. It detects payload state read during the check; it does not lock files
 against a concurrent local writer.
+
+Pull-request CI exercises the same boundary with isolated Tink state and routes
+the canonical GitHub URL through the checked-out repository. That local Git
+transport binds the test to the exact pull-request commit, but is not evidence
+that the commit is reachable from the public remote. The final release gate
+must repeat the documented procedure against the live canonical source.
 
 ## Layout
 
