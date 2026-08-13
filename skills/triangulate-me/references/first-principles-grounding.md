@@ -41,4 +41,9 @@ greenfield redesign.
 
 ## Source
 
-Derived from [cc-thinking-skills — thinking-first-principles](https://github.com/tjboudreaux/cc-thinking-skills/blob/main/skills/thinking-first-principles/SKILL.md).
+- Source revision: [cc-thinking-skills — thinking-first-principles at
+  `c2e4a73`](https://github.com/tjboudreaux/cc-thinking-skills/blob/c2e4a73a6aded6c53d419f1f3d2a011fea91946f/skills/thinking-first-principles/SKILL.md)
+  (immutable commit, retrieved 2026-08-12).
+- Local claim: the source's constraint classification, primitive reduction,
+  rebuild, and falsification steps ground the bounded procedure above. The
+  response contract and limits are local adaptations.

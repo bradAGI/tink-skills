@@ -28,7 +28,9 @@ Run the following algorithm. Tink commands and identity rules live in
    Within that pass, run a later family only while no candidate qualifies, finalists remain materially tied, or a decision-blocking gap remains. Apply this source ladder:
    - For a named provider, inspect its collection; search [skills.sh](https://skills.sh/)
      only for no qualifier, a material tie, or a coverage gap. Generic searches
-     start at skills.sh. Repository inspection deepens evidence, not coverage; rankings are leads.
+     start at skills.sh. This is a live, non-normative discovery index (retrieved
+     2026-08-12); repository inspection deepens evidence, not coverage, and
+     rankings are leads.
    - Expand to GitHub code search of valid `SKILL.md` directories only for no
      qualifier, a material tie, or a gap blocking a defensible recommendation.
    - Run one general-web or broader-index pass only if the GitHub pass still
