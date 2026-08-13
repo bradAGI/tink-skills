@@ -63,14 +63,13 @@ jobs:
         run: |
           ./node_modules/.bin/skills add . --list | tee /tmp/skills-list.txt
           grep -q "skill-scout" /tmp/skills-list.txt
-          grep -q "skill-eval-loop" /tmp/skills-list.txt
           grep -q "triangulate-me" /tmp/skills-list.txt
 
       - name: Check README links
         run: ./node_modules/.bin/markdown-link-check README.md
 
       - name: Check package count
-        run: test "$(find skills -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" = "3"
+        run: test "$(find skills -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" = "2"
 
   tink-package:
     name: Verify checked-out package through Tink

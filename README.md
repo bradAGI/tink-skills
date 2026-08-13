@@ -1,228 +1,141 @@
 # tink-skills
 
-Scout what fits. Measure if it moves anything.
+Two evidence-oriented Agent Skills:
 
-Local evidence under project `.agents/skills/` — not a claim the skill wins
-everywhere. Install with [tink](https://github.com/jon-devlapaz/tink).
+- **skill-scout** finds and qualifies existing skills before another one is
+  created.
+- **triangulate-me** pressure-tests interpretations without manufacturing false
+  compromise.
+
+Their evaluation corpora and provenance live beside them. Evaluation mechanics
+are independently released from
+[`jon-devlapaz/skill-eval-loop`](https://github.com/jon-devlapaz/skill-eval-loop).
 
 ```mermaid
 flowchart LR
-    A["task"] --> B["skill-scout"]
-    B -->|candidate| C["skill-eval-loop"]
-    B -.->|none| D["use / rewrite / stop"]
-    C --> D
+    task["task"] --> scout["skill-scout"]
+    scout -->|candidate| evaluator["skill-eval-loop"]
+    scout -.->|none| result["use / rewrite / stop"]
+    evaluator --> result
 ```
 
 ## Install
 
-```console
-# Tink 1.0.0 at the reviewed release-candidate commit.
-cargo install --git https://github.com/jon-devlapaz/tink.git \
-  --rev 2b082b5032b6f6cef6ea301868c499a93b86552f --locked
-
-tink init --with-tink-skills
-tink skill list
-tink skill check
-```
-
-One skill at a time:
+Install the user-facing skills from this repository with
+[Tink](https://github.com/jon-devlapaz/tink):
 
 ```console
 tink skill add jon-devlapaz/tink-skills --skill skill-scout
-tink skill add jon-devlapaz/tink-skills --skill skill-eval-loop
 tink skill add jon-devlapaz/tink-skills --skill triangulate-me
 ```
 
-Refresh every clean GitHub import:
+Install the evaluator from its own repository:
 
 ```console
-tink skill refresh
+tink skill add jon-devlapaz/skill-eval-loop --skill skill-eval-loop
+tink skill check
 ```
 
-Refresh one by naming it: `tink skill refresh NAME`.
-
-Local skills do not refresh. Install a library skill by name with
-`tink skill add NAME`. Do not hand-edit `.tink-source.json` receipts.
-
-## First success
-
-Start with the core loop: scout a candidate, then measure it. Point your coding
-agent at the project (with skills under `.agents/skills/`) and try:
-
-**Scout — find a fit (read-only until you approve install):**
-
-```text
-Use skill-scout to find a maintained skill for reviewing database migrations.
-```
-
-You should get a best-supported choice or an honest abstain, with evidence and a
-named next gate. Scout does not install by itself.
-
-**Eval — local with/without skill signal:**
-
-```text
-Use skill-eval-loop to test this skill against a no-skill control.
-Dry-run first, then ask me before any paid pilot.
-```
-
-You should get a budget, a dry-run plan that wrote nothing, and after you approve
-a pilot, local paired results (control vs skill) with integrity/claim limits —
-not a “wins everywhere” trophy.
+Refresh every clean GitHub import with `tink skill refresh`, or refresh one by
+name with `tink skill refresh NAME`. Do not hand-edit Tink source receipts.
 
 ## skill-scout
 
-Research-only ranking under constraints (workflow fit, safety, demonstrated
-behavior, and related gates). Modes: COMPARE, VERIFY, DISCOVER, or ABSTAIN/BUILD.
-DISCOVER inventories active project skills and the Tink library first, presents
-at most three qualified local candidates, then separately asks whether to pursue
-one and whether to search online. Authorized online discovery checks the first
-applicable structured source before evidence-triggered GitHub and general-web
-expansion. Cross-project catalog history is optional. Detail:
-[skills/skill-scout/SKILL.md](skills/skill-scout/SKILL.md).
+`skill-scout` ranks existing skills under workflow-fit, safety, and evidence
+constraints. Its lightest applicable mode runs first, local candidates precede
+online expansion, and no qualified candidate is a valid result.
 
-## skill-eval-loop
-
-Implemented paired-diagnostic adapters for Hermes, Claude Code, Codex, and Pi:
-same task, skill on vs off. One question at a time; dry-run free; live runs wait
-for your invocation budget. Implementation is not a claim that every real CLI
-has passed on the current release candidate; see the dated
-[harness evidence matrix](skills/skill-eval-loop/references/harness-support.md).
-Missing suites can be authored in a fresh subagent so cases stay sealed. Claim boundaries:
-[skills/skill-eval-loop/references/interpret-benchmark.md](skills/skill-eval-loop/references/interpret-benchmark.md).
-Full contract: [skills/skill-eval-loop/SKILL.md](skills/skill-eval-loop/SKILL.md).
+Full contract: [`skills/skill-scout/SKILL.md`](skills/skill-scout/SKILL.md).
 
 ## triangulate-me
 
-Iterative interpretation under pressure: restate the user's actual commitment,
-construct its strongest and weakest still-plausible readings, identify the
-crux, and recommend a convergence without manufacturing a straw man or false
-compromise. Full contract:
-[skills/triangulate-me/SKILL.md](skills/triangulate-me/SKILL.md).
+`triangulate-me` gives a claim faithful, steel, and stress readings, identifies
+the material crux, and converges according to the evidence. It may endorse one
+position, preserve a value disagreement, or abstain; it does not force a middle
+ground.
 
-## Model
+Full contract: [`skills/triangulate-me/SKILL.md`](skills/triangulate-me/SKILL.md).
 
-Each package is `SKILL.md` plus relative resources
-([Agent Skills](https://agentskills.io/specification) shape). Optional
-`agents/openai.yaml` is Codex UI metadata.
+## Evaluate these skills
 
-```mermaid
-flowchart LR
-  repo["tink-skills / skills/"]
-  tink["tink CLI"]
-  live[".agents/skills/"]
-
-  repo -->|"skill add"| tink
-  tink --> live
-```
-
-Published tree: this repo. Day-to-day live copy: `.agents/skills/<name>/`.
-
-## Advanced
-
-### Run eval scripts yourself
-
-When you are not driving the agent loop:
+Install `skill-eval-loop`, then statically audit a suite without calling a
+model:
 
 ```console
 export SKILL_EVAL_DIR="$PWD/.agents/skills/skill-eval-loop"
 
 python3 "$SKILL_EVAL_DIR/scripts/audit_suite.py" \
-  --skill-path "$PWD/.agents/skills/target-skill"
+  --skill-path "$PWD/skills/triangulate-me"
 
-python3 "$SKILL_EVAL_DIR/scripts/run_skill_eval.py" \
-  --skill-path "$PWD/.agents/skills/target-skill" \
-  --harness selected-harness \
-  --model exact-provider/model-id \
-  --trials 1 \
-  --dry-run
+python3 "$SKILL_EVAL_DIR/scripts/audit_suite.py" \
+  --skill-path "$PWD/skills/skill-scout"
 ```
 
-Optional flags: `--judge-model`, `--observer herdr`, `--evals-path`. Revalidate:
-`aggregate_benchmark.py --run-dir …`. Artifact default under
-`.agents/.eval-runs/` when skills live in `.agents/skills`.
+For paired live diagnostics, model-call authorization, harness support, and
+interpretation limits, follow the
+[`skill-eval-loop` contract](https://github.com/jon-devlapaz/skill-eval-loop/blob/v1.0.0/skills/skill-eval-loop/SKILL.md).
 
-### Promote live edits into this repo
+## Model
 
-```console
-python3 tools/promote_live_skill.py --skill skill-eval-loop \
-  --live-root .agents/skills
-# Copy the exact "Review snapshot" value from the inspected preview.
-python3 tools/promote_live_skill.py --skill skill-eval-loop \
-  --live-root .agents/skills --apply \
-  --snapshot sha256:reviewed-digest
-```
-
-The snapshot binds the repository and live file bytes and modes shown by the
-preview. Apply refuses drift, builds a complete replacement before swapping it
-in, and does not stage, commit, or delete repository-only files. To accept new
-live files, pass `--include-new` to both preview and apply. If a process is
-interrupted inside the portable two-rename swap, both preview and apply stop and
-report the retained transaction. After inspecting it, run
-`python3 tools/promote_live_skill.py --skill skill-eval-loop --recover`; this
-restores only an unambiguous missing destination, while ambiguous state remains
-untouched with its recovery path reported. It also removes a marker-only
-transaction left after an otherwise completed apply. Then:
-
-```console
-tink skill add . --skill skill-eval-loop
-tink skill check
-```
-
-### Prove one release identity
-
-For a release candidate, verify the installed remote copies against one exact
-Git object and require every Tink receipt to name it. The verifier reads
-candidate bytes from Git, not from the working tree, and includes executable
-mode in each payload digest:
-
-```console
-candidate="$(git rev-parse HEAD)"
-python3 tools/verify_release_identity.py \
-  --revision "$candidate" \
-  --source https://github.com/jon-devlapaz/tink-skills.git \
-  --installed-root /path/to/clean-project/.agents/skills
-```
-
-Run this after `tink skill add` and `tink skill check` in a clean project whose
-remote receipts resolve exactly to `candidate`. An ancestor receipt, a fork or
-other source, a different repository path, changed bytes, executable-mode drift,
-symlinks, or extra payload entries fail at a named identity boundary. A passing
-record contains the exact commit, receipt source/path, and payload SHA-256 for
-every `skills/*` package.
-
-This is a point-in-time proof: keep the isolated project quiescent while it
-runs. It detects payload state read during the check; it does not lock files
-against a concurrent local writer.
-
-Pull-request CI exercises the same boundary with isolated Tink state and routes
-the canonical GitHub URL through the checked-out repository. That local Git
-transport binds the test to the exact pull-request commit, but is not evidence
-that the commit is reachable from the public remote. The final release gate
-must repeat the documented procedure against the live canonical source.
-
-## Layout
+Each package is a `SKILL.md` plus its relative resources in
+[Agent Skills](https://agentskills.io/specification) shape. Optional
+`agents/openai.yaml` files provide Codex UI metadata.
 
 ```text
 .
-├── skills/skill-scout/
-├── skills/skill-eval-loop/
-├── skills/triangulate-me/
+├── skills/
+│   ├── skill-scout/
+│   └── triangulate-me/
 ├── tools/
 ├── tests/
 └── .github/workflows/
 ```
 
-Three published skill packages (CI enforces the count).
+This repository owns two installable packages. It consumes the evaluator only
+in CI at the full commit recorded in
+[`validate.yml`](.github/workflows/validate.yml); no evaluator implementation is
+vendored here.
+
+## Promote reviewed live edits
+
+The promotion tool accepts only the two repository-owned skills. Preview first,
+then apply the exact reviewed snapshot:
+
+```console
+python3 tools/promote_live_skill.py --skill triangulate-me \
+  --live-root .agents/skills
+
+python3 tools/promote_live_skill.py --skill triangulate-me \
+  --live-root .agents/skills --apply \
+  --snapshot sha256:reviewed-digest
+```
+
+Apply refuses source or destination drift, builds a complete replacement before
+swapping it, and never stages changes. Repository-only files are preserved.
+
+## Release identity
+
+Pull-request CI installs both repository skills and the pinned external
+evaluator into isolated Tink state. The evaluator-owned identity verifier binds
+each installed payload and receipt to the exact candidate repository and Git
+commit, including executable modes.
+
+This proves the checked-out candidate. A final release review should repeat the
+same installation against the live canonical GitHub source.
 
 ## Develop
 
+Install `skill-eval-loop` in this project or point `SKILL_EVAL_LOOP_ROOT` to a
+verified checkout, then run:
+
 ```console
-python3 -m unittest tests/test_promote_live_skill.py -v
-bash skills/skill-eval-loop/scripts/healthcheck.sh
-python3 -m ruff check tools tests skills/skill-eval-loop/scripts skills/skill-eval-loop/tests
+SKILL_EVAL_LOOP_ROOT="$PWD/.agents/skills/skill-eval-loop" \
+  python3 -m unittest discover -s tests -v
+
+python3 -m ruff check tools tests
 ```
 
-CI: [validate.yml](.github/workflows/validate.yml).
+CI: [`validate.yml`](.github/workflows/validate.yml).
 
 ## License
 
