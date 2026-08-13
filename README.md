@@ -164,6 +164,32 @@ tink skill add . --skill skill-eval-loop
 tink skill check
 ```
 
+### Prove one release identity
+
+For a release candidate, verify the installed remote copies against one exact
+Git object and require every Tink receipt to name it. The verifier reads
+candidate bytes from Git, not from the working tree, and includes executable
+mode in each payload digest:
+
+```console
+candidate="$(git rev-parse HEAD)"
+python3 tools/verify_release_identity.py \
+  --revision "$candidate" \
+  --source https://github.com/jon-devlapaz/tink-skills.git \
+  --installed-root /path/to/clean-project/.agents/skills
+```
+
+Run this after `tink skill add` and `tink skill check` in a clean project whose
+remote receipts resolve exactly to `candidate`. An ancestor receipt, a fork or
+other source, a different repository path, changed bytes, executable-mode drift,
+symlinks, or extra payload entries fail at a named identity boundary. A passing
+record contains the exact commit, receipt source/path, and payload SHA-256 for
+every `skills/*` package.
+
+This is a point-in-time proof: keep the isolated project quiescent while it
+runs. It detects payload state read during the check; it does not lock files
+against a concurrent local writer.
+
 ## Layout
 
 ```text
