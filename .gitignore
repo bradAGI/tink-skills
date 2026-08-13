@@ -8,3 +8,4 @@ __pycache__/
 .agents/
 .compound-engineering/
 docs/ce-reviews/
+node_modules/

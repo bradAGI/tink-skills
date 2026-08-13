@@ -108,10 +108,12 @@ Return:
 
 For ABSTAIN/BUILD, specify transformation, inputs, outputs, privacy and
 permission boundaries, human approvals, auditable evidence, evaluation,
-abstention/escalation, and recovery. For DISCOVER, VERIFY, source auditing,
-bounded search, or portable `repo-brief` resolution, load
-[references/scouting-workflow.md](references/scouting-workflow.md). When Tink
-is relevant, load [references/tink-integration.md](references/tink-integration.md):
+abstention/escalation, and recovery. For DISCOVER, VERIFY, source auditing, or
+bounded search, load
+[references/scouting-workflow.md](references/scouting-workflow.md). For static
+finalist evidence, load
+[references/repository-inspection.md](references/repository-inspection.md).
+When Tink is relevant, load [references/tink-integration.md](references/tink-integration.md):
 Tink owns inventory and adoption mechanics; Skill Scout owns qualification and
 recommendation.
 

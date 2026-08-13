@@ -16,7 +16,9 @@ flowchart LR
 ## Install
 
 ```console
-cargo install --git https://github.com/jon-devlapaz/tink.git --locked
+# Tink 1.0.0 at the reviewed release-candidate commit.
+cargo install --git https://github.com/jon-devlapaz/tink.git \
+  --rev 2b082b5032b6f6cef6ea301868c499a93b86552f --locked
 
 tink init --with-tink-skills
 tink skill list
@@ -142,16 +144,59 @@ Optional flags: `--judge-model`, `--observer herdr`, `--evals-path`. Revalidate:
 ```console
 python3 tools/promote_live_skill.py --skill skill-eval-loop \
   --live-root .agents/skills
+# Copy the exact "Review snapshot" value from the inspected preview.
 python3 tools/promote_live_skill.py --skill skill-eval-loop \
-  --live-root .agents/skills --apply
+  --live-root .agents/skills --apply \
+  --snapshot sha256:reviewed-digest
 ```
 
-Does not stage, commit, or delete repository-only files. Then:
+The snapshot binds the repository and live file bytes and modes shown by the
+preview. Apply refuses drift, builds a complete replacement before swapping it
+in, and does not stage, commit, or delete repository-only files. To accept new
+live files, pass `--include-new` to both preview and apply. If a process is
+interrupted inside the portable two-rename swap, both preview and apply stop and
+report the retained transaction. After inspecting it, run
+`python3 tools/promote_live_skill.py --skill skill-eval-loop --recover`; this
+restores only an unambiguous missing destination, while ambiguous state remains
+untouched with its recovery path reported. It also removes a marker-only
+transaction left after an otherwise completed apply. Then:
 
 ```console
 tink skill add . --skill skill-eval-loop
 tink skill check
 ```
+
+### Prove one release identity
+
+For a release candidate, verify the installed remote copies against one exact
+Git object and require every Tink receipt to name it. The verifier reads
+candidate bytes from Git, not from the working tree, and includes executable
+mode in each payload digest:
+
+```console
+candidate="$(git rev-parse HEAD)"
+python3 tools/verify_release_identity.py \
+  --revision "$candidate" \
+  --source https://github.com/jon-devlapaz/tink-skills.git \
+  --installed-root /path/to/clean-project/.agents/skills
+```
+
+Run this after `tink skill add` and `tink skill check` in a clean project whose
+remote receipts resolve exactly to `candidate`. An ancestor receipt, a fork or
+other source, a different repository path, changed bytes, executable-mode drift,
+symlinks, or extra payload entries fail at a named identity boundary. A passing
+record contains the exact commit, receipt source/path, and payload SHA-256 for
+every `skills/*` package.
+
+This is a point-in-time proof: keep the isolated project quiescent while it
+runs. It detects payload state read during the check; it does not lock files
+against a concurrent local writer.
+
+Pull-request CI exercises the same boundary with isolated Tink state and routes
+the canonical GitHub URL through the checked-out repository. That local Git
+transport binds the test to the exact pull-request commit, but is not evidence
+that the commit is reachable from the public remote. The final release gate
+must repeat the documented procedure against the live canonical source.
 
 ## Layout
 
