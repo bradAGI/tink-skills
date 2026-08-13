@@ -51,12 +51,32 @@ def validate_pinned_model(model: str) -> None:
         raise ValueError("use an exact pinned model id, not a moving alias")
 
 
+def _normalized_model_identity(model: object) -> str:
+    if not isinstance(model, str):
+        return ""
+    return model.strip().lower()
+
+
 def model_matches(requested: str, actual: object) -> bool:
-    if not isinstance(actual, str) or not actual:
-        return False
-    requested_leaf = requested.rsplit("/", 1)[-1].lower()
-    actual_leaf = actual.rsplit("/", 1)[-1].lower()
-    return requested_leaf == actual_leaf
+    requested_identity = _normalized_model_identity(requested)
+    actual_identity = _normalized_model_identity(actual)
+    return bool(requested_identity) and requested_identity == actual_identity
+
+
+def _record_model_identities(record: dict[str, Any]) -> list[str]:
+    model = record.get("model")
+    if not isinstance(model, str) or not model.strip():
+        return []
+    model = model.strip()
+    provider = record.get("provider")
+    if not isinstance(provider, str) or not provider.strip():
+        return [model]
+    provider = provider.strip()
+    if "/" not in model:
+        return [f"{provider}/{model}"]
+    if model.split("/", 1)[0].lower() == provider.lower():
+        return [model]
+    return [model, f"{provider}/{model}"]
 
 
 def resolve_harness(
@@ -553,12 +573,11 @@ def trace_metadata(
             and event.get("subtype") == "init"
             and isinstance(event.get("model"), str)
         ):
-            models.append(event["model"])
+            models.extend(_record_model_identities(event))
         for message in _messages(event):
             if message.get("role") != "assistant":
                 continue
-            if isinstance(message.get("model"), str):
-                models.append(message["model"])
+            models.extend(_record_model_identities(message))
             response = _message_text(message)
             if response and (not responses or responses[-1] != response):
                 responses.append(response)
@@ -634,7 +653,7 @@ def trace_metadata(
                     event.get("type") == "turn_context"
                     and isinstance(payload.get("model"), str)
                 ):
-                    models.append(payload["model"])
+                    models.extend(_record_model_identities(payload))
                 if skill_name and event.get("type") == "world_state":
                     state = payload.get("state")
                     host_skills = (
@@ -695,7 +714,7 @@ def trace_metadata(
             usage_report = None
         if isinstance(usage_report, dict):
             if isinstance(usage_report.get("model"), str):
-                models.append(usage_report["model"])
+                models.extend(_record_model_identities(usage_report))
             if isinstance(usage_report.get("session_id"), str):
                 session_ids.append(usage_report["session_id"])
             usage_records.append(usage_report)
@@ -704,9 +723,9 @@ def trace_metadata(
         responses.append(raw_trace.strip())
     usage = usage_records[-1] if usage_records else {}
     model_identities = {
-        model.rsplit("/", 1)[-1].lower()
+        identity
         for model in models
-        if model.strip()
+        if (identity := _normalized_model_identity(model))
     }
     model_attestation_conflict = len(model_identities) > 1
     actual_model = (

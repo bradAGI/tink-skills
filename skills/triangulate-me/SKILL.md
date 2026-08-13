@@ -18,6 +18,8 @@ a proposal for the user to accept, reject, or revise.
 - Split genuinely independent claims and handle them separately.
 - Ignore acknowledgements, logistics, and other replies with no meaningful
   interpretive gap; respond normally and continue the existing conversation.
+  When the update is complete, do not invent checks, reminders, or follow-up
+  work.
 - Find available facts yourself. Ask the user only for judgments, preferences,
   private context, or evidence you cannot inspect.
 
@@ -36,9 +38,10 @@ Apply this sequence:
 3. **Stress read** — Form the weakest interpretation that a reasonable reader
    could still derive from the answer. Complete when it names a specific,
    supported vulnerability—or states that none exists.
-4. **Crux** — Name the exact premise, definition, value, or missing fact that
-   explains the distance between the readings. Complete when resolving it would
-   materially collapse that distance.
+4. **Crux** — State declaratively the exact premise, definition, value, or
+   missing fact that explains the distance between the readings; do not phrase
+   it as a question. Complete when resolving it would materially collapse that
+   distance.
 5. **First-principles check, when triggered** — If the crux contains a
    supposedly fixed constraint (such as "must use X," "too expensive," "can't
    scale," or "that's how it is done"), or a solution justified mainly by
@@ -46,15 +49,22 @@ Apply this sequence:
 6. **Convergence** — Recommend the most robust next formulation. Preserve the
    steel read's value while repairing the stress read's supported vulnerability.
    Complete when it states what was preserved, repaired, or left unresolved;
-   derive it from grounded primitives when the check ran.
-7. **Next question** — Ask one question whose answer resolves the crux. Do not
-   ask a downstream question while its prerequisite remains unsettled. Complete
-   when answering it would settle the current crux.
+   derive it from grounded primitives when the check ran. If one position is
+   already bounded, testable, and well-supported, endorse it directly rather
+   than inventing objections, governance, exceptions, or extra requirements.
+7. **Next question** — Ask zero or one question. Ask only when a material crux
+   remains, and do not repeat the crux in question form. Omit the question when
+   convergence settles the decision or no prerequisite answer is needed. Do not
+   ask a downstream question while its prerequisite remains unsettled.
    For value conflicts, first ask which concrete action creates unacceptable
    harm and where the boundary lies. Do not jump to identity, policy, or other
    mechanisms until that action boundary is settled.
 
-Use this compact form unless the subject needs more explanation:
+Use the sequence as a reasoning discipline, not a mandatory output template.
+Lead with the decision or direct answer. Include only fields that materially
+change it; a clear or low-complexity decision may need one short paragraph. When
+the full frame helps the user inspect a real interpretive gap, use this compact
+form:
 
 ```markdown
 **Faithful read:** ...
@@ -73,8 +83,8 @@ Use this as one bounded pass, separate from the six interpretation fields. Read
 check is triggered. It defines the constraint classes, primitive reduction,
 rebuild, residuals, and kill test. Keep the main response's `Grounding` line
 compact and concrete. Reserve the pass for a false-constraint or borrowed-
-solution signal; keep time-critical incidents and ordinary polish on their
-direct path.
+solution signal; a proposed solution or missing evidence alone is not enough.
+Keep time-critical incidents and ordinary polish on their direct path.
 
 ## Protect the inquiry
 
@@ -85,10 +95,12 @@ direct path.
   disagreement, or abstain pending evidence or a prototype.
 - Route a factual dispute to the named check that could resolve it.
 - When no plausible stress read exists, say so and move to the next unresolved
-  decision.
+  decision without manufacturing a crux or follow-up question.
 - Distinguish an ungrillable question from an unresolved one. Recommend a
   concrete experiment when reaction to evidence, behavior, or a prototype is
-  required.
+  required. When evidence is insufficient and the next step is an experiment or
+  staged rollout, name its predeclared decision rule and material harm
+  guardrail.
 - Keep the user's original language where possible. Mark agent-added language
   and assumptions plainly.
 

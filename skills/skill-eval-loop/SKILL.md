@@ -21,7 +21,9 @@ Require:
 - a target directory containing `SKILL.md`;
 - an existing `evals/evals.json`, a supplied `--evals-path`, or authority to
   launch a fresh subagent to author the suite;
-- references that pass every declared grader;
+- references that pass every declared grader; use schema-3 `case_contrast` when
+  the result must claim every response-sensitive grader distinguishes a known
+  good/bad pair;
 - an exact model identifier before live trials;
 - a working executable and authentication for the selected harness;
 - a Herdr-managed pane with `HERDR_ENV=1` only for `--observer herdr`.
@@ -138,6 +140,10 @@ collect exact ids from its model picker and rerun with
 `--models exact-id-1,exact-id-2`. Availability, price, and quota come only from
 live discovery or the user — invent none.
 
+Pin the identity exactly as the selected harness reports it. Attestation
+normalizes surrounding whitespace and case only: provider-qualified and bare
+model ids are distinct, and no provider or model aliases are inferred.
+
 Show the budget, balanced, and quality frontier; disclose tier fallbacks and
 unknown cost. For a release claim, prefer the intended deployment model. For
 portability, plan separate runs across tiers. Use no judge when the suite is
@@ -220,12 +226,14 @@ toolset, or sandbox-only — recorded in the run artifact). Prefer deterministic
 graders.
 
 The runner owns counterbalance (odd trials control-first; even trials
-treatment-first), reference validation, provenance hashes, and post-invocation
-trace-attested model identity checks. A missing or mismatched judge identity
-stops on the first reference judge; without model rubrics, a missing or
-mismatched target identity stops after the first target invocation. Forced Codex
-treatment also requires trace-visible access to the full structured skill
-payload before downstream grading.
+treatment-first), per-grader contrast validation, provenance hashes, and
+post-invocation trace-attested model identity checks. A missing or mismatched
+judge identity stops on the first reference judge; in a `case_contrast` suite,
+a model grader that accepts the declared bad response stops before target
+trials. Without model rubrics, a missing or mismatched target identity stops
+after the first target invocation.
+Forced Codex treatment also requires trace-visible access to the full structured
+skill payload before downstream grading.
 
 Raw harness traces are the evidence owner. Herdr, when enabled, focuses a
 retained workspace once, reuses condition panes sequentially, and routes model-
